@@ -1,0 +1,148 @@
+:root{
+    --primary: #5A67D8;
+    --accent: #48BB78;
+    --bg: #F7FAFC;
+    --text: #2D3748;
+    --muted: #718096;
+    --card: #FFFFFF;
+    --danger: #E53E3E;
+    --success: #38A169;
+    --radius: 12px;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%;}
+body{
+    margin:0;
+    font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+}
+
+/* Top nav */
+.nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 28px;
+    background:linear-gradient(90deg, rgba(90,103,216,0.06), rgba(72,187,120,0.03));
+    border-bottom:1px solid rgba(0,0,0,0.03);
+    position:sticky;
+    top:0;
+    z-index:50;
+}
+.brand{display:flex;align-items:center;gap:12px;}
+.logo{
+    width:42px;height:42px;border-radius:10px;background:var(--primary);
+    display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px;
+    box-shadow:0 6px 18px rgba(90,103,216,0.12);
+}
+.app-name{font-weight:700;font-size:18px}
+.nav-right{display:flex;gap:12px;align-items:center;}
+.nav-right a{color:var(--text);text-decoration:none;padding:8px 12px;border-radius:8px}
+.nav-right a.btn{background:var(--primary);color:white}
+.profile-chip{
+    display:flex;gap:8px;align-items:center;padding:6px 10px;background:var(--card);border-radius:18px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.03);
+}
+
+/* container */
+.container{max-width:1100px;margin:28px auto;padding:0 18px;}
+.image{
+    font-size:50px;
+    color:white;
+    background-color:#5b6ee1;
+    width:80px;
+    height:80px;
+    border-radius:20px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin:0 auto ;
+}
+/* Card */
+.card{
+    background:var(--card);
+    border-radius:var(--radius);
+    padding:16px;
+    box-shadow:0 8px 24px rgba(16,24,40,0.04);
+}
+
+/* Login / Signup */
+.center-wrap{
+    display:flex;align-items:center;justify-content:center;height:calc(100vh - 80px);
+}
+.auth-card{width:380px;padding:28px;text-align:left}
+.auth-card h2{margin:0 0 12px;font-size:22px}
+.input{width:100%;padding:10px 12px;margin:10px 0;border-radius:10px;border:1px solid #E6EEF6;background:#fff}
+.primary-btn{
+    display:inline-block;background:var(--primary);color:#fff;padding:10px 14px;border-radius:10px;border:none;
+    cursor:pointer;font-weight:600;margin-top:12px;width:100%;
+}
+.link-muted{display:block;text-align:center;margin-top:12px;color:var(--muted)}
+
+/* Dashboard layout */
+.grid{
+    display:grid;
+    grid-template-columns: 1fr 360px;
+    gap:20px;
+    align-items:start;
+}
+
+/* summary cards */
+.summary-row{
+    display:flex;gap:16px;margin-bottom:18px;
+}
+.summary{
+    flex:1;padding:18px;border-radius:12px;background:linear-gradient(180deg,#fff,#fbfbff);display:flex;justify-content:space-between;align-items:center;
+}
+.summary .left{font-size:14px;color:var(--muted)}
+.summary .amt{font-size:20px;font-weight:700}
+.summary.you-owes .amt{color:var(--danger)}
+.summary.you-owed .amt{color:var(--success)}
+
+/* groups list */
+.group-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.group-card{padding:14px;border-radius:12px;background:var(--card);display:flex;flex-direction:column;gap:8px}
+.group-card h4{margin:0}
+.small{font-size:13px;color:var(--muted)}
+
+/* quick actions */
+.fab{
+    position:fixed;right:28px;bottom:28px;background:var(--accent);color:white;padding:14px;border-radius:12px;border:none;cursor:pointer;font-weight:700;
+    box-shadow:0 12px 30px rgba(72,187,120,0.18);
+}
+
+/* activities */
+.activity{margin-top:18px}
+.activity .item{display:flex;gap:12px;padding:10px;border-radius:10px;background:linear-gradient(180deg,#fff,#fcfcff);margin-bottom:8px}
+.avatar{width:44px;height:44px;border-radius:10px;background:#EDF2F7;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--muted)}
+
+/* group details layout */
+.group-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.member-list{display:flex;gap:10px;flex-wrap:wrap}
+.member-tag{padding:8px 10px;background:#F5F8FF;border-radius:999px;font-weight:600;color:var(--primary);font-size:14px}
+
+/* expense list */
+.expense{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:10px;margin-bottom:8px;background:#fff}
+.expense .meta{display:flex;gap:12px;align-items:center}
+.expense .amt{font-weight:700}
+
+/* add expense form */
+.form-row{display:flex;gap:12px}
+.form-col{flex:1}
+.checkbox-grid{display:flex;gap:8px;flex-wrap:wrap}
+.small-input{padding:8px;border-radius:8px;border:1px solid #EDF2F7}
+
+/* settlement page */
+.settle-list{display:flex;flex-direction:column;gap:8px}
+.settle-item{padding:12px;border-radius:10px;background:linear-gradient(180deg,#fff,#fbfff8);display:flex;justify-content:space-between;align-items:center}
+
+/* responsive */
+@media (max-width:900px){
+    .grid{grid-template-columns:1fr}
+    .nav{padding:12px}
+    .container{padding:0 12px}
+}

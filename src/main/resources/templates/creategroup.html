@@ -1,0 +1,74 @@
+<!-- create-group.html -->
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <title>Create Group</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link th:href="@{/style.css}" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="nav">
+    <div class="brand">
+        <div class="logo">ES</div>
+        <div class="app-name">Expense Splitter</div>
+    </div>
+    <div class="nav-right">
+        <a th:href="@{/DASHBOARD}">Dashboard</a>
+        <div class="profile-chip" th:text="${detail[0].name}">User</div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card" style="max-width:680px;margin:18px auto">
+
+        <h3 style="margin-top:0">Create New Group</h3>
+
+        <!-- FORM START -->
+        <form th:action="@{/creategroup}" method="post">
+
+            <!-- GROUP NAME -->
+            <label class="small">Group Name</label>
+            <input class="input"
+                   name="group_name"
+                   placeholder="e.g., Goa Trip"
+                   required />
+
+            <!-- MEMBERS -->
+            <label class="small">Add Members</label>
+
+            <div class="member-list" style="margin-top:10px">
+                <div th:each="user : ${detail}" class="member-tag">
+                    <label>
+                        <input type="checkbox"
+                               name="members"
+                               th:value="${user.email}" required/>
+                        <span th:text="${user.name}">Name</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- BUTTONS -->
+            <div style="margin-top:18px;display:flex;gap:10px">
+                <button type="submit" class="primary-btn">Create Group</button>
+
+                <a th:href="@{/DASHBOARD}"
+                   class="primary-btn"
+                   style="background:#fff;color:var(--primary);
+                          border:1px solid rgba(90,103,216,0.12);
+                          text-decoration:none;padding:10px 12px;">
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+        <!-- FORM END -->
+
+    </div>
+</div>
+
+</body>
+</html>

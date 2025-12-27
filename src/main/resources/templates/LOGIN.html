@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>firstpage</title>
+
+    <link rel="stylesheet" href="first.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+</head>
+<body>
+
+<div class="page">
+    <div class="main">
+
+        <div class="image">
+            <i class="fa-solid fa-file-invoice-dollar"></i>
+        </div>
+
+        <div class="text">
+            <p>SPLITWISE</p>
+        </div>
+
+        <div class="tagline">
+            <p>Manage shared expenses easily</p>
+        </div>
+
+        <div class="card">
+            <h3>Welcome Back</h3>
+
+            <form th:action="@{/LOGIN}" method="post">
+
+                <label>Email</label>
+                <div class="input-box">
+                    <i class="fa-regular fa-envelope"></i>
+                    <input type="email"
+                           name="email"
+                           placeholder="you@example.com"
+                           required>
+                </div>
+
+                <label>Password</label>
+                <div class="input-box">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password"
+                           name="password"
+                           placeholder="password"
+                           required>
+                </div>
+
+                <button type="submit" class="login-btn">Login</button>
+
+            </form>
+
+            <p th:if="${error}" style="color:red;" th:text="${error}"></p>
+        </div>
+
+
+
+        <p class="signup">
+                Don't have an account? <span><a href="SIGNUP1">Sign up</a></span>
+            </p>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
