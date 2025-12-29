@@ -1,6 +1,8 @@
-package org.example.demooooooo.Service;
+package org.example.demooooooo.Entity;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 import java.util.ArrayList;
 import java.util.List;

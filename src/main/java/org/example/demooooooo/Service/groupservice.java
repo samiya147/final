@@ -1,5 +1,9 @@
 package org.example.demooooooo.Service;
 
+import org.example.demooooooo.Entity.Detail;
+import org.example.demooooooo.Entity.groupdetail;
+import org.example.demooooooo.Repository.Repository;
+import org.example.demooooooo.Repository.grouprepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

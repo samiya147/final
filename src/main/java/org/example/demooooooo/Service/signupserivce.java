@@ -1,7 +1,7 @@
 package org.example.demooooooo.Service;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import org.example.demooooooo.Entity.Detail;
+import org.example.demooooooo.Repository.Repository;
 import org.springframework.stereotype.Service;
 
 @Service

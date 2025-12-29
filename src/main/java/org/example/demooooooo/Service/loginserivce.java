@@ -1,5 +1,7 @@
 package org.example.demooooooo.Service;
 
+import org.example.demooooooo.Entity.Detail;
+import org.example.demooooooo.Repository.Repository;
 import org.springframework.stereotype.Service;
 
 @Service

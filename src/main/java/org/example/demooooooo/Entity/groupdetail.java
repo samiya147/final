@@ -1,4 +1,4 @@
-package org.example.demooooooo.Service;
+package org.example.demooooooo.Entity;
 
 import jakarta.persistence.*;
 

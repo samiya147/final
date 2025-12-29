@@ -1,9 +1,7 @@
 package org.example.demooooooo.Controller;
 
-import org.example.demooooooo.Service.Detail;
+import org.example.demooooooo.Entity.Detail;
 import org.example.demooooooo.Service.loginserivce;
-import org.example.demooooooo.Service.signupserivce;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;

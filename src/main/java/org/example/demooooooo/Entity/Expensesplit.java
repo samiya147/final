@@ -1,6 +1,8 @@
-package org.example.demooooooo.Service;
+package org.example.demooooooo.Entity;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Id;
+import jakarta.persistence.Entity;
 
 @Entity
 public class Expensesplit

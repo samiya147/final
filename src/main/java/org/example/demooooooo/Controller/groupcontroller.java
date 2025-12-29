@@ -1,8 +1,7 @@
 package org.example.demooooooo.Controller;
 
-import org.example.demooooooo.Service.Detail;
-import org.example.demooooooo.Service.Repository;
-import org.example.demooooooo.Service.grouprepository;
+import org.example.demooooooo.Repository.Repository;
+import org.example.demooooooo.Repository.grouprepository;
 import org.example.demooooooo.Service.groupservice;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

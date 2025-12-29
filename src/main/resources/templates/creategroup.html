@@ -28,7 +28,7 @@
         <h3 style="margin-top:0">Create New Group</h3>
 
         <!-- FORM START -->
-        <form th:action="@{/creategroup}" method="post">
+        <form th:action="@{/creategroup}" method="post" onsubmit="return checkone()">
 
             <!-- GROUP NAME -->
             <label class="small">Group Name</label>
@@ -39,13 +39,12 @@
 
             <!-- MEMBERS -->
             <label class="small">Add Members</label>
-
             <div class="member-list" style="margin-top:10px">
                 <div th:each="user : ${detail}" class="member-tag">
                     <label>
                         <input type="checkbox"
                                name="members"
-                               th:value="${user.email}" required/>
+                               th:value="${user.email}" />
                         <span th:text="${user.name}">Name</span>
                     </label>
                 </div>
@@ -69,6 +68,18 @@
 
     </div>
 </div>
+
+<!-- JAVASCRIPT VALIDATION -->
+<script>
+    function checkone() {
+        const checkedMembers = document.querySelectorAll('input[name="members"]:checked');
+        if (checkedMembers.length < 2) {
+            alert("Please select at least two members to create the group.");
+            return false; // Prevent form submission
+        }
+        return true; // Allow form submission
+    }
+</script>
 
 </body>
 </html>
