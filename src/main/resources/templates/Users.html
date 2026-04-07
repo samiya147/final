@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Child Tracker Login</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #dfe4ea;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .card {
+            width: 400px;
+            background: #f5f6fa;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            margin: auto;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #4f46e5, #3b82f6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin: 10px 0;
+        }
+
+        .subtitle {
+            color: gray;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border-radius: 10px;
+            border: none;
+            background: #eaeaf0;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(to right, #4f46e5, #3b82f6);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <!-- ICON -->
+    <div class="logo">🛡️</div>
+
+    <!-- TITLE -->
+    <h1>Child Tracker</h1>
+    <p class="subtitle">Keep your loved ones safe and connected</p>
+
+    <!-- FORM -->
+    <form action="/login" method="post">
+
+        <div class="input-group">
+            <label>Email or Username</label>
+            <input type="text" name="username" placeholder="Enter your email" required>
+        </div>
+
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" name="password" placeholder="Enter your password" required>
+        </div>
+
+        <button class="btn" type="submit">Login</button>
+    </form>
+
+    <p class="error" th:text="${error}"></p>
+
+</div>
+
+</body>
+</html>

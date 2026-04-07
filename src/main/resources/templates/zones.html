@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Safe Zones</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #eef2f7;
+            --card: #ffffff;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --danger: #dc2626;
+            --text: #111827;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --safe: #16a34a;
+            --unsafe: #dc2626;
+            --radius: 14px;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ── Navbar ── */
+        nav {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 0 32px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        .nav-brand {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text);
+            text-decoration: none;
+        }
+        .nav-brand:hover { opacity: 0.75; }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            border: none;
+            text-decoration: none;
+            font-family: inherit;
+        }
+
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-primary:hover { background: var(--primary-hover); }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--danger);
+            border: 1.5px solid var(--danger);
+        }
+        .btn-outline:hover { background: #fee2e2; }
+
+        /* ── Page Layout ── */
+        .page {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        .page-header { margin-bottom: 28px; }
+        .page-header h1 { font-size: 1.9rem; font-weight: 700; }
+        .page-header p { color: var(--muted); margin-top: 4px; font-size: 0.92rem; }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        /* ── Zone List Card ── */
+        .zones-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+        }
+
+        .zones-card h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .zone-list { display: flex; flex-direction: column; gap: 12px; }
+
+        .zone-item {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            transition: box-shadow 0.15s;
+        }
+        .zone-item:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.09); }
+
+        .zone-item-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .zone-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.97rem;
+        }
+
+        .zone-icon { width: 18px; height: 18px; color: var(--primary); }
+
+        .btn-delete {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--danger);
+            padding: 4px;
+            border-radius: 6px;
+            transition: background 0.15s;
+        }
+        .btn-delete:hover { background: #fee2e2; }
+
+        .zone-meta {
+            font-size: 0.8rem;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .zone-status {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            border: 1.5px solid;
+        }
+
+        .status-inside  { color: var(--safe);   border-color: var(--safe);   background: #f0fdf4; }
+        .status-outside { color: var(--unsafe);  border-color: var(--unsafe); background: #fef2f2; }
+
+        .empty-state {
+            text-align: center;
+            padding: 32px 16px;
+            color: var(--muted);
+        }
+        .empty-state svg { margin-bottom: 12px; opacity: 0.4; }
+
+        /* ── Map Card ── */
+        .map-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+        }
+
+        .map-card-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+        }
+
+        #map { height: 560px; width: 100%; }
+
+        @media (max-width: 860px) {
+            .content-grid { grid-template-columns: 1fr; }
+            #map { height: 380px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── Navbar ── -->
+<nav>
+    <!--  ✅ FIXED: was /dashboard — now matches your @GetMapping("/trackerdash")  -->
+    <a href="/trackerdash" class="nav-brand">Home</a>
+
+    <div class="nav-actions">
+        <!--  ✅ Links to /zones/add which is mapped in SetZoneController  -->
+        <a href="/zones/add" class="btn btn-primary">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Add Zone
+        </a>
+        <!--  ✅ Change /logout to whatever your logout URL is if different  -->
+        <a href="/logout" class="btn btn-outline">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            Logout
+        </a>
+    </div>
+</nav>
+
+<!-- ── Page ── -->
+<div class="page">
+    <div class="page-header">
+        <h1>Safe Zones</h1>
+        <p>Manage your child's safe zones</p>
+    </div>
+
+    <div class="content-grid">
+
+        <!-- ── Zone List ── -->
+        <div class="zones-card">
+            <h2 th:text="'Active Zones (' + ${zoneCount} + ')'">Active Zones (0)</h2>
+
+            <!-- Has zones -->
+            <div class="zone-list" th:if="${zones != null and !zones.isEmpty()}">
+                <div class="zone-item"
+                     th:each="zone : ${zones}"
+                     th:attr="data-lat=${zone.latitude},data-lng=${zone.longitude},data-radius=${zone.radius}">
+
+                    <div class="zone-item-header">
+                        <span class="zone-name">
+                            <svg class="zone-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>
+                                <circle cx="12" cy="10" r="3"/>
+                            </svg>
+                            <span th:text="${zone.name}">Zone Name</span>
+                        </span>
+
+                        <!--  ✅ Delete form posts to /zones/delete/{id}  -->
+                        <form th:action="@{/zones/delete/{id}(id=${zone.id})}" method="post" style="display:inline">
+                            <button type="submit" class="btn-delete"
+                                    onclick="return confirm('Delete this zone?')">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <polyline points="3 6 5 6 21 6"/>
+                                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                                    <path d="M10 11v6"/><path d="M14 11v6"/>
+                                    <path d="M9 6V4h6v2"/>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="zone-meta">
+                        <div th:text="'Radius: ' + ${zone.radius} + 'm'">Radius: 500m</div>
+                        <div th:text="'Lat: ' + ${zone.latitude}">Lat: 0.0000</div>
+                        <div th:text="'Lng: ' + ${zone.longitude}">Lng: 0.0000</div>
+                        <div th:if="${zone.zoneType == 'ROUTE'}"
+                             th:text="'Route: ' + ${zone.sourceName} + ' → ' + ${zone.destinationName}">
+                        </div>
+                    </div>
+
+                    <span class="zone-status"
+                          th:classappend="${zone.childInside} ? 'status-inside' : 'status-outside'"
+                          th:text="${zone.childInside} ? 'Child Inside' : 'Child Outside'">
+                        Child Outside
+                    </span>
+                </div>
+            </div>
+
+            <!-- Empty state -->
+            <div class="empty-state" th:if="${zones == null or zones.isEmpty()}">
+                <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                <p>No safe zones yet.</p>
+                <a href="/zones/add" class="btn btn-primary" style="margin-top:14px;">
+                    + Add Your First Zone
+                </a>
+            </div>
+        </div>
+
+        <!-- ── Map ── -->
+        <div class="map-card">
+            <div class="map-card-header">All Safe Zones</div>
+            <div id="map"></div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    const map = L.map('map').setView([20.5937, 78.9629], 5);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    const items = document.querySelectorAll('.zone-item');
+    const bounds = [];
+
+    items.forEach(item => {
+        const lat    = parseFloat(item.dataset.lat);
+        const lng    = parseFloat(item.dataset.lng);
+        const radius = parseInt(item.dataset.radius);
+        const nameEl = item.querySelector('.zone-name span');
+        const name   = nameEl ? nameEl.textContent.trim() : 'Zone';
+        const statusEl = item.querySelector('.zone-status');
+        const isInside = statusEl && statusEl.classList.contains('status-inside');
+
+        if (!isNaN(lat) && !isNaN(lng)) {
+            L.circle([lat, lng], {
+                radius: radius,
+                color: isInside ? '#16a34a' : '#2563eb',
+                fillColor: isInside ? '#16a34a' : '#2563eb',
+                fillOpacity: 0.13,
+                weight: 2
+            }).addTo(map).bindPopup(
+                `<b>${name}</b><br>Radius: ${radius}m<br>Status: ${isInside ? '✅ Inside' : '🔴 Outside'}`
+            );
+
+            L.circleMarker([lat, lng], {
+                radius: 7,
+                color: '#fff',
+                fillColor: isInside ? '#16a34a' : '#2563eb',
+                fillOpacity: 1,
+                weight: 2
+            }).addTo(map);
+
+            bounds.push([lat, lng]);
+        }
+    });
+
+    if (bounds.length > 0) {
+        map.fitBounds(bounds, { padding: [60, 60] });
+    }
+</script>
+</body>
+</html>
