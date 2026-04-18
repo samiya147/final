@@ -173,37 +173,108 @@
 <script>
 
     var map = L.map('map').setView([19.2183, 72.9781], 13);
-
+    var pathCoordinates = [];
+    var pathLine = null;
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
         .addTo(map);
 
     var marker = L.marker([19.2183, 72.9781]).addTo(map);
 
-    function updateLocation() {
+    // ✅ track last location
+    var lastLat = null;
+    var lastLng = null;
 
-    fetch('/tracker/location')
-        .then(response => response.json())
+    // ✅ only center map once
+    var firstLoad = true;
+    function loadPath() {
+
+    fetch('/tracker/path')
+        .then(res => res.json())
         .then(data => {
 
-            var lat = data.lat;
-            var lng = data.lng;
+            pathCoordinates = data.map(p => [p.latitude, p.longitude]);
 
-            document.getElementById("lat").innerText = lat;
-            document.getElementById("lng").innerText = lng;
+            if (pathLine) {
+                map.removeLayer(pathLine);
+            }
 
-            marker.setLatLng([lat, lng]);
-            map.setView([lat, lng]);
+            pathLine = L.polyline(pathCoordinates, {
+                color: 'blue',
+                weight: 4
+            }).addTo(map);
 
-            document.getElementById("safeStatus").innerText = "Yes";
-        })
-        .catch(error => {
-            console.error("Error fetching location:", error);
+            if (pathCoordinates.length > 0) {
+                let lastPoint = pathCoordinates[pathCoordinates.length - 1];
+                marker.setLatLng(lastPoint);
+                map.setView(lastPoint, 15);
+            }
         });
 }
+    function updateLocation() {
 
-setInterval(updateLocation, 3000);
+        fetch('/tracker/location')
+            .then(response => response.json())
+            .then(data => {
+
+                var lat = data.lat;
+                var lng = data.lng;
+
+                document.getElementById("lat").innerText = lat;
+                document.getElementById("lng").innerText = lng;
+
+                // ✅ Update only if location actually changed
+                if (lastLat === null || Math.abs(lat - lastLat) > 0.0001 || Math.abs(lng - lastLng) > 0.0001) {
+
+                   var newPoint = [lat, lng];
+
+// Add to path
+pathCoordinates.push(newPoint);
+
+// Limit size (avoid lag)
+if (pathCoordinates.length > 50) {
+    pathCoordinates.shift();
+}
+
+// Remove old line
+if (pathLine) {
+    map.removeLayer(pathLine);
+}
+
+// Draw new blue line
+pathLine = L.polyline(pathCoordinates, {
+    color: 'blue',
+    weight: 4
+}).addTo(map);
+
+// Move marker
+marker.setLatLng(newPoint);
+
+                    // ✅ Center only first time (no jumping later)
+                    if (firstLoad) {
+                        map.setView([lat, lng], 15);
+                        firstLoad = false;
+                    }
+
+                    lastLat = lat;
+                    lastLng = lng;
+                }
+
+                document.getElementById("safeStatus").innerText = "Updated";
+
+            })
+            .catch(error => {
+                console.error("Error fetching location:", error);
+            });
+    }
+
+    // ✅ RUN ONCE WHEN PAGE LOADS
+    loadPath();
+updateLocation();
+
+    // ✅ UPDATE EVERY 2 MINUTES (120000 ms)
+    setInterval(updateLocation, 5000);
 
 </script>
-
+a
 </body>
 </html>

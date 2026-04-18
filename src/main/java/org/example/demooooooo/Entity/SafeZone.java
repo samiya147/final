@@ -2,6 +2,8 @@ package org.example.demooooooo.Entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 
 @Entity
 @Table(name = "safe_zones")
@@ -22,6 +24,29 @@ public class SafeZone {
 
     @Column(nullable = false)
     private Integer radius;
+
+    @Column(nullable = false)
+    private LocalTime startTime;
+
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalTime endTime) {
+        this.endTime = endTime;
+    }
+
+    @Column(nullable = false)
+    private LocalTime endTime;
+
 
     @Column(name = "zone_type", nullable = false)
     private String zoneType; // "CIRCLE" or "ROUTE"
@@ -44,17 +69,18 @@ public class SafeZone {
     @Column(name = "dest_lng")
     private Double destLng;
 
-    // Links this zone to a parent user (matches users1 entity id)
+    // ✅ SINGLE correct field
+    @Column(name = "child_inside")
+    private boolean childInside = false;
+
+    // Links this zone to a parent user
     @Column(name = "user_id", nullable = false)
     private Long userId;
-
-    @Column(name = "child_inside")
-    private Boolean childInside = false;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // ── Getters & Setters ──────────────────────────────────────────────────
+    // ── Getters & Setters ─────────────────────────────
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -95,14 +121,20 @@ public class SafeZone {
     public Long getUserId() { return userId; }
     public void setUserId(Long userId) { this.userId = userId; }
 
-    public Boolean getChildInside() { return childInside; }
-    public void setChildInside(Boolean childInside) { this.childInside = childInside; }
+    // ✅ IMPORTANT → this fixes your error
+    public boolean isChildInside() {
+        return childInside;
+    }
+
+    public void setChildInside(boolean childInside) {
+        this.childInside = childInside;
+    }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    // Helper used in Thymeleaf templates
+    // Helper for UI
     public String getStatusLabel() {
-        return (childInside != null && childInside) ? "Child Inside" : "Child Outside";
+        return childInside ? "Child Inside" : "Child Outside";
     }
 }
